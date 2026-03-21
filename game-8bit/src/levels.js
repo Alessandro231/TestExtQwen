@@ -29,6 +29,12 @@ export const LEVELS = [
       { id: 'l1-m1', x: 260, y: 360, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
       { id: 'l1-m2', x: 980, y: 280, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
     ],
+    // Nivel 1 (facil): checkpoints mas frecuentes para aprendizaje
+    checkpoints: [
+      { id: 'l1-cp1', label: 'HILLS-1', x: 420, y: 420, respawn: { x: 380, y: 388 } },
+      { id: 'l1-cp2', label: 'HILLS-2', x: 980, y: 420, respawn: { x: 940, y: 388 } },
+      { id: 'l1-cp3', label: 'HILLS-3', x: 1560, y: 420, respawn: { x: 1520, y: 388 } },
+    ],
     coins: [
       { x: 230, y: 280 },
       { x: 260, y: 280 },
@@ -97,6 +103,11 @@ export const LEVELS = [
     mobilePlatforms: [
       { id: 'l2-m1', x: 620, y: 340, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
       { id: 'l2-m2', x: 1700, y: 300, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
+    ],
+    // Nivel 2 (medio): checkpoints en transiciones importantes
+    checkpoints: [
+      { id: 'l2-cp1', label: 'FORT-1', x: 540, y: 420, respawn: { x: 500, y: 388 } },   // Antes del primer hueco
+      { id: 'l2-cp2', label: 'FORT-2', x: 1460, y: 420, respawn: { x: 1420, y: 388 } }, // Inicio de tramo final
     ],
     coins: [
       // Monedas en escalera inicial
@@ -195,6 +206,11 @@ export const LEVELS = [
       { id: 'l3-m1', x: 520, y: 320, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
       { id: 'l3-m2', x: 2140, y: 360, width: 96, height: 20, axis: 'x', range: 200, speed: 2.5, pauseMs: 300, startActive: true },
     ],
+    // Nivel 3 (dificil): menor densidad para mantener tension
+    checkpoints: [
+      { id: 'l3-cp1', label: 'CASTLE-1', x: 1240, y: 420, respawn: { x: 1200, y: 388 } }, // Mitad del nivel
+      { id: 'l3-cp2', label: 'CASTLE-2', x: 2240, y: 420, respawn: { x: 2200, y: 388 } }, // Antes del tramo del boss
+    ],
     coins: [
       // Escalera inicial
       { x: 170, y: 300 },
@@ -253,22 +269,3 @@ export const LEVELS = [
     },
   },
 ]
-
-// Helper para cargar un nivel específico
-export function loadLevel(levelId) {
-  return LEVELS.find(l => l.id === levelId) || LEVELS[0]
-}
-
-// Helper para verificar si existe el siguiente nivel
-export function hasNextLevel(currentLevelId) {
-  return currentLevelId < LEVELS.length
-}
-
-// Helper para obtener el siguiente nivel
-export function getNextLevel(currentLevelId) {
-  const currentIndex = LEVELS.findIndex(l => l.id === currentLevelId)
-  if (currentIndex < LEVELS.length - 1) {
-    return LEVELS[currentIndex + 1]
-  }
-  return null
-}
