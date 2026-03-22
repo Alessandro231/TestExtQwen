@@ -38,6 +38,9 @@ const ARROW_MAX_DISTANCE = 400; // Alcance máximo horizontal
 const ARROW_STUCK_TIME = 3000; // Tiempo clavada en plataforma (ms)
 const SHOOT_COOLDOWN = 250; // ms entre disparos
 const ARROW_POINTS = 150; // Puntos por enemigo eliminado con flecha
+const BOW_CHARGE_MAX_MS = 1200; // Carga máxima del arco (ms)
+const BOW_MIN_POWER_SCALE = 0.35; // Potencia mínima al click corto
+const BOW_MAX_RANGE_SCALE = 1.35; // Alcance máximo con carga completa
 
 // Constantes del Boss
 const BOSS_MAX_HP = 5; // Vida total del Jefe
@@ -102,6 +105,8 @@ function App() {
       shootCooldown: 0,
       coyoteTimer: 0,
       jumpBufferTimer: 0,
+      bowAimAngle: 0,
+      bowChargeMs: 0,
     },
     dashState: {
       charges: MAX_DASH_CHARGES,
@@ -145,6 +150,17 @@ function App() {
       nextSnapshotAt: 0,
       fps: 0,
     },
+    mouse: {
+      worldX: 0,
+      worldY: 0,
+      screenX: 0,
+      screenY: 0,
+      isDown: false,
+    },
+    inventory: {
+      hasBow: false,
+      arrows: 0,
+    },
   });
   const frameUpdateRef = useRef(null);
 
@@ -156,6 +172,8 @@ function App() {
   // Estados React para UI de arco (solo contador de flechas)
   const [playerRefHasBow, setPlayerRefHasBow] = useState(false);
   const [arrowCount, setArrowCount] = useState(0);
+  const [bowChargeRatio, setBowChargeRatio] = useState(0);
+  const [bowCharging, setBowCharging] = useState(false);
   const syncBossHud = useCallback((boss) => {
     const nextHud = {
       active: boss.active,
@@ -207,6 +225,8 @@ function App() {
         damageInvuln: 0,
         coyoteTimer: 0,
         jumpBufferTimer: 0,
+        bowAimAngle: 0,
+        bowChargeMs: 0,
       };
       game.dashState = {
         charges: MAX_DASH_CHARGES,
@@ -267,15 +287,17 @@ function App() {
       game.player.swordTimer = 0;
       game.player.swordActive = false;
 
-      // Resetear estados de arco en el jugador
-      game.player.hasBow = false;
-      game.player.arrows = 0;
+      // Restaurar estados de arco en el jugador (persistencia entre niveles)
+      game.player.hasBow = game.inventory.hasBow;
+      game.player.arrows = game.inventory.arrows;
 
       setSwordTimeLeft(0);
       setSwordActive(false);
       setPlayerRefHasSword(false);
-      setPlayerRefHasBow(false);
-      setArrowCount(0);
+      setPlayerRefHasBow(game.player.hasBow);
+      setArrowCount(game.player.arrows);
+      setBowChargeRatio(0);
+      setBowCharging(false);
       game.portal = levelData.portal
         ? { ...levelData.portal, active: !levelData.portal.requiresBossDefeat }
         : null;
@@ -397,6 +419,9 @@ function App() {
           ARROW_MAX_DISTANCE,
           ARROW_STUCK_TIME,
           ARROW_POINTS,
+          BOW_CHARGE_MAX_MS,
+          BOW_MIN_POWER_SCALE,
+          BOW_MAX_RANGE_SCALE,
           ATTACK_POINTS,
           BOSS_SIZE,
           BOSS_POINTS,
@@ -414,6 +439,8 @@ function App() {
         setPlayerRefHasSword,
         setPlayerRefHasBow,
         setArrowCount,
+        setBowChargeRatio,
+        setBowCharging,
         setScore,
         setCheckpointHud,
         setCheckpointNotice,
@@ -443,6 +470,56 @@ function App() {
       if (checkpointNoticeTimeoutRef.current) {
         clearTimeout(checkpointNoticeTimeoutRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const getCanvasPoint = (event) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return null;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = CANVAS_WIDTH / rect.width;
+      const scaleY = CANVAS_HEIGHT / rect.height;
+      return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY,
+      };
+    };
+
+    const handleMouseMove = (event) => {
+      const point = getCanvasPoint(event);
+      if (!point) return;
+      const game = gameRef.current;
+      game.mouse.screenX = point.x;
+      game.mouse.screenY = point.y;
+      game.mouse.worldX = point.x + game.camera.x;
+      game.mouse.worldY = point.y;
+    };
+
+    const handleMouseDown = (event) => {
+      if (event.button !== 0) return;
+      gameRef.current.mouse.isDown = true;
+    };
+
+    const handleMouseUp = (event) => {
+      if (event.button !== 0) return;
+      gameRef.current.mouse.isDown = false;
+    };
+
+    const handleWindowBlur = () => {
+      gameRef.current.mouse.isDown = false;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("blur", handleWindowBlur);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("blur", handleWindowBlur);
     };
   }, []);
 
@@ -480,6 +557,8 @@ function App() {
   }, []);
 
   const startGame = () => {
+    gameRef.current.inventory = { hasBow: false, arrows: 0 };
+    gameRef.current.mouse.isDown = false;
     initLevel(1);
     setScore(0);
     setLives(3);
@@ -489,6 +568,8 @@ function App() {
     setPlayerRefHasSword(false);
     setPlayerRefHasBow(false);
     setArrowCount(0);
+    setBowChargeRatio(0);
+    setBowCharging(false);
     setGameState("playing");
   };
 
@@ -560,6 +641,15 @@ function App() {
           <div className="bow-bar">
             <span className="bow-icon">🏹</span>
             <span className="bow-label">ARROWS:</span>
+            <div className="bow-time-bar">
+              <div
+                className="bow-time-fill"
+                style={{
+                  width: `${bowChargeRatio * 100}%`,
+                  opacity: bowCharging ? 1 : 0.45,
+                }}
+              />
+            </div>
             <div className="bow-arrows">
               <span className="bow-arrows-icon">➡️</span>
               <span className="bow-arrows-count">
@@ -596,7 +686,8 @@ function App() {
       <div className="controls-info">
         <p>
           ⬅️ ➡️ or A/D - Move | ⬆️ or W or SPACE - Jump | SHIFT - Dash | Z -
-          Attack (sword) | C - Shoot (bow) | F3 - Debug
+          Attack (sword) | Mouse Left Click (hold/release) - Shoot (bow) | F3 -
+          Debug
         </p>
         <p className="sword-hint">
           Touch a checkpoint flag to set your respawn position in the current
@@ -607,7 +698,8 @@ function App() {
         </p>
         {playerRefHasBow && (
           <p className="bow-hint">
-            🏹 Use C to shoot arrows! Combine with ⬆️ for diagonal shots.
+            🏹 Mantén click izquierdo para cargar y suelta para disparar al
+            cursor.
           </p>
         )}
       </div>
