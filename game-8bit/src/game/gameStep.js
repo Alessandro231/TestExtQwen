@@ -531,29 +531,6 @@ export function stepGameFrame({
       }
     }
 
-    if (player.isAttacking && game.boss.active && !game.boss.dead) {
-      const hitbox = getPlayerAttackHitbox(player, player.attackDirection)
-      if (
-        hitbox.x < game.boss.x + BOSS_SIZE &&
-        hitbox.x + hitbox.width > game.boss.x &&
-        hitbox.y < game.boss.y + BOSS_SIZE &&
-        hitbox.y + hitbox.height > game.boss.y
-      ) {
-        if (game.boss.hitFlash <= 0) {
-          game.boss.hp -= 1
-          game.boss.hitFlash = 150
-          syncBossHud(game.boss)
-          triggerShake(8, 200)
-          if (game.boss.hp <= 0) {
-            game.boss.dead = true
-            syncBossHud(game.boss)
-            setScore((prev) => prev + BOSS_POINTS)
-            setGameState('win')
-          }
-        }
-      }
-    }
-
     if (
       !player.isDashing &&
       !player.isAttacking &&

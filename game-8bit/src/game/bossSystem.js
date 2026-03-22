@@ -53,6 +53,16 @@ export function updateBossSystem({
   boss.x += boss.vx
   boss.y += boss.vy
 
+  // Check if boss falls into void
+  if (boss.y > CANVAS_HEIGHT) {
+    boss.dead = true
+    boss.hp = 0
+    syncBossHud(boss)
+    addScore(BOSS_POINTS)
+    setGameState('win')
+    return
+  }
+
   platforms.forEach((platform) => {
     if (
       boss.x < platform.x + platform.width &&

@@ -34,7 +34,7 @@ export const BOSS_SIZE = 64
 export const BOSS_PROJECTILE_SPEED = 6
 export const BOSS_POINTS = 5000
 export const BOSS_JUMP_FORCE = -14
-export const BOSS_MOVE_SPEED = 2
+export const BOSS_MOVE_SPEED = 1.2
 export const BOSS_AGGRO_RANGE = 400
 export const BOSS_JUMP_INTERVAL = 2000
 
