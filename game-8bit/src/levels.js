@@ -35,6 +35,7 @@ export const LEVELS = [
       { id: 'l1-cp2', label: 'HILLS-2', x: 980, y: 420, respawn: { x: 940, y: 388 } },
       { id: 'l1-cp3', label: 'HILLS-3', x: 1560, y: 420, respawn: { x: 1520, y: 388 } },
     ],
+    portal: { x: 1880, y: 348, width: 48, height: 72 },
     coins: [
       { x: 230, y: 280 },
       { x: 260, y: 280 },
@@ -109,6 +110,7 @@ export const LEVELS = [
       { id: 'l2-cp1', label: 'FORT-1', x: 540, y: 420, respawn: { x: 500, y: 388 } },   // Antes del primer hueco
       { id: 'l2-cp2', label: 'FORT-2', x: 1460, y: 420, respawn: { x: 1420, y: 388 } }, // Inicio de tramo final
     ],
+    portal: { x: 2150, y: 348, width: 48, height: 72 },
     coins: [
       // Monedas en escalera inicial
       { x: 200, y: 300 },
@@ -211,6 +213,7 @@ export const LEVELS = [
       { id: 'l3-cp1', label: 'CASTLE-1', x: 1240, y: 420, respawn: { x: 1200, y: 388 } }, // Mitad del nivel
       { id: 'l3-cp2', label: 'CASTLE-2', x: 2240, y: 420, respawn: { x: 2200, y: 388 } }, // Antes del tramo del boss
     ],
+    portal: { x: 2600, y: 348, width: 48, height: 72, requiresBossDefeat: true },
     coins: [
       // Escalera inicial
       { x: 170, y: 300 },
