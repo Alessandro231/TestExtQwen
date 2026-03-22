@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   min-height: 100vh;
   display: flex;
@@ -27,23 +27,28 @@ body {
 }
 
 .title {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 24px;
-  color: #FFD700;
-  text-shadow: 
+  color: #ffd700;
+  text-shadow:
     3px 3px 0 #000,
     -1px -1px 0 #000,
     1px -1px 0 #000,
     -1px 1px 0 #000,
-    0 0 20px #FFD700;
+    0 0 20px #ffd700;
   margin-bottom: 15px;
   letter-spacing: 2px;
   animation: titleGlow 2s ease-in-out infinite;
 }
 
 @keyframes titleGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.3); }
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+  }
 }
 
 .hud {
@@ -55,10 +60,10 @@ body {
   border: 4px solid #4a4a4a;
   border-radius: 0;
   margin-bottom: 10px;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 12px;
   color: #fff;
-  box-shadow: 
+  box-shadow:
     inset 0 0 10px #000,
     0 4px 0 #000;
 }
@@ -78,10 +83,37 @@ body {
   box-shadow:
     inset 0 0 8px #000,
     0 3px 0 #000;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 10px;
   color: #c8ffe1;
   text-shadow: 1px 1px 0 #000;
+}
+
+.boss-status-strip {
+  width: 640px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  border: 3px solid #4a4a4a;
+  box-shadow:
+    inset 0 0 8px #000,
+    0 3px 0 #000;
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.boss-status-strip.alive {
+  background: linear-gradient(180deg, #2d131a 0%, #1a0b10 100%);
+  color: #ff8ea1;
+  border-color: #8f3348;
+}
+
+.boss-status-strip.defeated {
+  background: linear-gradient(180deg, #152f1f 0%, #0d1e14 100%);
+  color: #a8ffb5;
+  border-color: #2e7d4a;
 }
 
 .checkpoint-notice {
@@ -90,7 +122,7 @@ body {
   background: rgba(11, 28, 20, 0.92);
   border: 3px solid #2d7658;
   box-shadow: 0 4px 0 #000;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 10px;
   color: #a8ff2f;
   text-shadow: 1px 1px 0 #000;
@@ -110,18 +142,18 @@ body {
 
 .game-canvas {
   border: 6px solid #333;
-  box-shadow: 
+  box-shadow:
     0 0 0 4px #1a1a1a,
     0 0 20px rgba(0, 0, 0, 0.8),
     inset 0 0 60px rgba(0, 0, 0, 0.3);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  background: #87CEEB;
+  background: #87ceeb;
 }
 
 .controls-info {
   margin-top: 15px;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 10px;
   color: #888;
   text-align: center;
@@ -137,7 +169,7 @@ body {
   background: rgba(10, 12, 20, 0.92);
   border: 3px solid #4a4a4a;
   box-shadow: 0 4px 0 #000;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 9px;
   line-height: 1.6;
   color: #9ff5cf;
@@ -161,8 +193,12 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .menu-box {
@@ -170,7 +206,7 @@ body {
   border: 6px solid #4a4a4a;
   padding: 40px 60px;
   text-align: center;
-  box-shadow: 
+  box-shadow:
     0 0 0 4px #1a1a1a,
     0 10px 30px rgba(0, 0, 0, 0.8),
     inset 0 0 30px rgba(0, 0, 0, 0.5);
@@ -178,52 +214,73 @@ body {
 }
 
 @keyframes menuPop {
-  from { 
+  from {
     transform: scale(0.8);
     opacity: 0;
   }
-  to { 
+  to {
     transform: scale(1);
     opacity: 1;
   }
 }
 
 .menu-title {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 28px;
-  color: #FFD700;
+  color: #ffd700;
   margin-bottom: 15px;
   text-shadow: 3px 3px 0 #000;
 }
 
 .menu-title.gameover {
-  color: #DC143C;
+  color: #dc143c;
   animation: pulse 0.5s ease-in-out infinite;
 }
 
 .menu-title.winner {
-  color: #32CD32;
+  color: #32cd32;
   animation: rainbow 1s linear infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes rainbow {
-  0% { color: #FF0000; }
-  14% { color: #FFA500; }
-  28% { color: #FFD700; }
-  42% { color: #32CD32; }
-  57% { color: #1E90FF; }
-  71% { color: #8A2BE2; }
-  85% { color: #FF69B4; }
-  100% { color: #FF0000; }
+  0% {
+    color: #ff0000;
+  }
+  14% {
+    color: #ffa500;
+  }
+  28% {
+    color: #ffd700;
+  }
+  42% {
+    color: #32cd32;
+  }
+  57% {
+    color: #1e90ff;
+  }
+  71% {
+    color: #8a2be2;
+  }
+  85% {
+    color: #ff69b4;
+  }
+  100% {
+    color: #ff0000;
+  }
 }
 
 .menu-subtitle {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 12px;
   color: #aaa;
   margin-bottom: 30px;
@@ -231,47 +288,47 @@ body {
 }
 
 .menu-score {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 14px;
-  color: #FFD700;
+  color: #ffd700;
   margin-bottom: 30px;
   text-shadow: 2px 2px 0 #000;
 }
 
 .start-btn {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 14px;
   padding: 15px 40px;
-  background: linear-gradient(180deg, #4CAF50 0%, #2E7D32 100%);
+  background: linear-gradient(180deg, #4caf50 0%, #2e7d32 100%);
   color: #fff;
-  border: 4px solid #1B5E20;
+  border: 4px solid #1b5e20;
   cursor: pointer;
   text-transform: uppercase;
-  box-shadow: 
-    0 6px 0 #1B5E20,
+  box-shadow:
+    0 6px 0 #1b5e20,
     0 10px 20px rgba(0, 0, 0, 0.5);
   transition: all 0.1s ease;
   image-rendering: pixelated;
 }
 
 .start-btn:hover {
-  background: linear-gradient(180deg, #66BB6A 0%, #43A047 100%);
+  background: linear-gradient(180deg, #66bb6a 0%, #43a047 100%);
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 0 #1B5E20,
+  box-shadow:
+    0 8px 0 #1b5e20,
     0 12px 25px rgba(0, 0, 0, 0.5);
 }
 
 .start-btn:active {
   transform: translateY(4px);
-  box-shadow: 
-    0 2px 0 #1B5E20,
+  box-shadow:
+    0 2px 0 #1b5e20,
     0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Scanline effect */
 .game-canvas::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -289,9 +346,15 @@ body {
 
 /* CRT flicker effect */
 @keyframes crtFlicker {
-  0% { opacity: 0.97; }
-  50% { opacity: 1; }
-  100% { opacity: 0.98; }
+  0% {
+    opacity: 0.97;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.98;
+  }
 }
 
 .game-canvas {
@@ -304,7 +367,7 @@ body {
 
 .sword-bar-container {
   position: absolute;
-  top: 70px;  /* Debajo del HUD */
+  top: 70px; /* Debajo del HUD */
   left: 50%;
   transform: translateX(-50%);
   width: 640px;
@@ -323,7 +386,7 @@ body {
   box-shadow:
     inset 0 0 10px #000,
     0 4px 0 #000;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 10px;
   color: #fff;
 }
@@ -344,38 +407,48 @@ body {
 
 .sword-time-fill {
   height: 100%;
-  background: linear-gradient(90deg, #32CD32 0%, #228B22 100%);
+  background: linear-gradient(90deg, #32cd32 0%, #228b22 100%);
   transition: width 0.1s linear;
   box-shadow: 0 0 10px rgba(50, 205, 50, 0.5);
 }
 
 .sword-time-fill.warning {
-  background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(90deg, #ffd700 0%, #ffa500 100%);
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   animation: swordWarningBlink 0.5s ease-in-out infinite;
 }
 
 .sword-time-fill.critical {
-  background: linear-gradient(90deg, #FF0000 0%, #8B0000 100%);
+  background: linear-gradient(90deg, #ff0000 0%, #8b0000 100%);
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
   animation: swordCriticalBlink 0.25s ease-in-out infinite;
 }
 
 @keyframes swordWarningBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes swordCriticalBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .sword-time-text {
   min-width: 40px;
   text-align: right;
   text-shadow: 1px 1px 0 #000;
-  color: #FFD700;
+  color: #ffd700;
 }
 
 .sword-hint {
@@ -391,7 +464,7 @@ body {
 
 .bow-bar-container {
   position: absolute;
-  top: 110px;  /* Debajo de la barra de espada */
+  top: 110px; /* Debajo de la barra de espada */
   left: 50%;
   transform: translateX(-50%);
   width: 640px;
@@ -410,7 +483,7 @@ body {
   box-shadow:
     inset 0 0 10px #000,
     0 4px 0 #000;
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
   font-size: 10px;
   color: #fff;
 }
@@ -437,38 +510,48 @@ body {
 
 .bow-time-fill {
   height: 100%;
-  background: linear-gradient(90deg, #9370DB 0%, #6A5ACD 100%);
+  background: linear-gradient(90deg, #9370db 0%, #6a5acd 100%);
   transition: width 0.1s linear;
   box-shadow: 0 0 10px rgba(147, 112, 219, 0.5);
 }
 
 .bow-time-fill.warning {
-  background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(90deg, #ffd700 0%, #ffa500 100%);
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   animation: bowWarningBlink 0.5s ease-in-out infinite;
 }
 
 .bow-time-fill.critical {
-  background: linear-gradient(90deg, #FF0000 0%, #8B0000 100%);
+  background: linear-gradient(90deg, #ff0000 0%, #8b0000 100%);
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
   animation: bowCriticalBlink 0.25s ease-in-out infinite;
 }
 
 @keyframes bowWarningBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes bowCriticalBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .bow-time-text {
   min-width: 40px;
   text-align: right;
   text-shadow: 1px 1px 0 #000;
-  color: #9370DB;
+  color: #9370db;
 }
 
 .bow-arrows {
@@ -488,7 +571,7 @@ body {
   min-width: 50px;
   text-align: left;
   text-shadow: 1px 1px 0 #000;
-  color: #FFD700;
+  color: #ffd700;
 }
 
 .bow-hint {
@@ -504,7 +587,7 @@ body {
 
 .boss-hud {
   position: absolute;
-  top: 150px; /* Debajo de los timers de armas */
+  top: 170px; /* Debajo de los timers de armas */
   left: 50%;
   transform: translateX(-50%);
   width: 640px;
@@ -514,12 +597,18 @@ body {
 }
 
 @keyframes bossHudIntro {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .boss-name {
-  color: #DC143C;
+  color: #dc143c;
   font-size: 14px;
   margin-bottom: 5px;
   text-shadow: 2px 2px 0 #000;
@@ -538,15 +627,19 @@ body {
 
 .boss-hp-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8B0000 0%, #FF0000 50%, #8B0000 100%);
+  background: linear-gradient(90deg, #8b0000 0%, #ff0000 50%, #8b0000 100%);
   background-size: 200% 100%;
   animation: bossHpGlow 2s linear infinite;
   transition: width 0.3s ease-out;
 }
 
 @keyframes bossHpGlow {
-  0% { background-position: 200% 0; }
-  100% { background-position: 0% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
 }
 
 .boss-hp-text {
