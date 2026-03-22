@@ -9,6 +9,17 @@ const validateLevel = (level) => {
     throw new Error(`Invalid level ${level?.id ?? 'unknown'}: missing ${missingKeys.join(', ')}`)
   }
 
+  if (level.portal != null) {
+    const { x, y, width, height, requiresBossDefeat } = level.portal
+    const portalFields = [x, y, width, height]
+    if (!portalFields.every((value) => typeof value === 'number')) {
+      throw new Error(`Invalid level ${level.id}: portal must include numeric x, y, width and height`)
+    }
+    if (requiresBossDefeat != null && typeof requiresBossDefeat !== 'boolean') {
+      throw new Error(`Invalid level ${level.id}: portal.requiresBossDefeat must be boolean when provided`)
+    }
+  }
+
   if (typeof level.spawnPoint.x !== 'number' || typeof level.spawnPoint.y !== 'number') {
     throw new Error(`Invalid level ${level.id}: spawnPoint must have numeric x and y`)
   }

@@ -110,6 +110,7 @@ function App() {
     coins: [],
     enemies: [],
     powerUpBlocks: [],
+    portal: null,
     swordItem: null,
     bowItem: null,
     arrows: [],
@@ -131,6 +132,7 @@ function App() {
       projectiles: [],
       dead: false,
       hitFlash: 0,
+      justDied: false,
     },
     debug: {
       enabled: false,
@@ -167,6 +169,7 @@ function App() {
     const game = gameRef.current
     game.level = lvlId // Sincronizar ref con el ID de nivel
     setLevel(lvlId) // Actualizar estado para UI
+    setLives(3)
 
     game.player = {
       x: levelData.spawnPoint.x,
@@ -252,6 +255,9 @@ function App() {
     setPlayerRefHasSword(false)
     setPlayerRefHasBow(false)
     setArrowCount(0)
+    game.portal = levelData.portal
+      ? { ...levelData.portal, active: !levelData.portal.requiresBossDefeat }
+      : null
 
     // Configurar Boss si el nivel lo tiene
     if (levelData.boss) {
@@ -267,6 +273,7 @@ function App() {
         projectiles: [],
         dead: false,
         hitFlash: 0,
+        justDied: false,
       }
       syncBossHud(game.boss)
     } else {
@@ -282,12 +289,13 @@ function App() {
         projectiles: [],
         dead: true,
         hitFlash: 0,
+        justDied: false,
       }
       syncBossHud(game.boss)
     }
 
     setLevelName(levelData.name)
-  }, [syncBossHud])
+  }, [setLives, syncBossHud])
 
   const updateBossInternal = useCallback((game, deltaTime) => {
     updateBossSystem({
@@ -296,9 +304,8 @@ function App() {
       getAttackHitbox: getPlayerAttackHitbox,
       syncBossHud,
       addScore: (points) => setScore((prev) => prev + points),
-      setGameState,
     })
-  }, [setScore, setGameState, syncBossHud])
+  }, [setScore, syncBossHud])
 
   // Función para crear partículas (vfx)
   const spawnParticles = (x, y, count, color, speedScale = 1) => {
@@ -558,7 +565,7 @@ function App() {
         <div className="overlay">
           <div className="menu-box">
             <h2 className="menu-title">8-BIT ADVENTURE</h2>
-            <p className="menu-subtitle">Collect all coins!</p>
+            <p className="menu-subtitle">Find the portal to advance—coins boost your score!</p>
             <button className="start-btn" onClick={startGame}>
               START GAME
             </button>
@@ -607,4 +614,3 @@ function App() {
 }
 
 export default App
-

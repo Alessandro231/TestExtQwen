@@ -455,6 +455,38 @@ const drawMobilePlatform = (ctx, platform) => {
   }
 }
 
+const drawPortal = (ctx, portal, time) => {
+  const { x, y, width, height, active, requiresBossDefeat } = portal
+  const pulse = Math.sin(time / 180) * 3
+
+  ctx.save()
+  ctx.fillStyle = '#1E1E2F'
+  ctx.fillRect(x - 6, y - 6, width + 12, height + 12)
+
+  ctx.fillStyle = active ? '#7CFC00' : '#5A5A5A'
+  ctx.fillRect(x, y, width, height)
+
+  ctx.fillStyle = active ? '#00F5A0' : '#343434'
+  ctx.fillRect(x + 6, y + 8, width - 12, height - 16)
+
+  if (active) {
+    ctx.globalAlpha = 0.3
+    ctx.fillStyle = '#00F5A0'
+    ctx.fillRect(x - 4, y - 4, width + 8, height + 8)
+    ctx.globalAlpha = 0.5
+    ctx.fillStyle = '#7CFC00'
+    ctx.fillRect(x + 2, y + 2 + pulse, width - 4, height - 4)
+    ctx.globalAlpha = 1
+  } else if (requiresBossDefeat) {
+    ctx.fillStyle = '#FF6347'
+    ctx.fillRect(x + width / 2 - 8, y + height - 22, 16, 16)
+    ctx.fillStyle = '#2B2B2B'
+    ctx.fillRect(x + width / 2 - 2, y + height - 18, 4, 12)
+  }
+
+  ctx.restore()
+}
+
 const drawCheckpoint = (ctx, checkpoint, time) => {
   const poleTop = checkpoint.y - checkpoint.height
   const poleX = checkpoint.x
@@ -516,7 +548,7 @@ const drawWorldPlatforms = (ctx, platforms) => {
 }
 
 export function renderGameScene(ctx, game, timestamp) {
-  const { camera, player, platforms, mobilePlatforms, coins, enemies, powerUpBlocks } = game
+  const { camera, player, platforms, mobilePlatforms, coins, enemies, powerUpBlocks, portal } = game
 
   const skyColor = LEVEL_SKY_COLORS[game.level] || COLORS.sky
   ctx.fillStyle = skyColor
@@ -536,6 +568,9 @@ export function renderGameScene(ctx, game, timestamp) {
   mobilePlatforms.forEach((platform) => drawMobilePlatform(ctx, platform))
   if (Array.isArray(game.checkpoints)) {
     game.checkpoints.forEach((checkpoint) => drawCheckpoint(ctx, checkpoint, timestamp))
+  }
+  if (portal) {
+    drawPortal(ctx, portal, timestamp)
   }
   coins.forEach((coin) => drawCoin(ctx, coin, timestamp))
   enemies.forEach((enemy) => drawEnemy(ctx, enemy, timestamp))

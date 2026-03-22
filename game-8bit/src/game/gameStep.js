@@ -61,8 +61,6 @@ export function stepGameFrame({
     ARROW_STUCK_TIME,
     ARROW_POINTS,
     ATTACK_POINTS,
-    BOSS_SIZE,
-    BOSS_POINTS,
     DEBUG_HUD_UPDATE_MS,
   } = config
 
@@ -78,7 +76,21 @@ export function stepGameFrame({
     levelWidth,
     powerUpBlocks,
     spawnPoint,
+    boss,
+    portal,
   } = game
+
+  const completeLevel = () => {
+    if (hasNextLevel(game.level)) {
+      const nextLevelData = getNextLevel(game.level)
+      if (nextLevelData) {
+        initLevel(nextLevelData.id)
+      }
+      setGameState('level-complete')
+    } else {
+      setGameState('win')
+    }
+  }
 
   const applyPlayerDamage = () => {
     if (player.damageInvuln > 0) return
@@ -136,6 +148,11 @@ export function stepGameFrame({
 
   if (game.boss.active && game.boss.hitFlash > 0) {
     game.boss.hitFlash -= deltaTime
+  }
+
+  if (portal) {
+    const bossCleared = !boss?.active || boss.dead
+    portal.active = !portal.requiresBossDefeat || bossCleared
   }
 
   updateMobilePlatforms(deltaTime, mobilePlatforms)
@@ -495,16 +512,24 @@ export function stepGameFrame({
     }
   })
 
-  if (coins.every((coin) => coin.collected)) {
-    if (hasNextLevel(game.level)) {
-      const nextLevelData = getNextLevel(game.level)
-      if (nextLevelData) {
-        initLevel(nextLevelData.id)
-      }
-      setGameState('level-complete')
-    } else {
-      setGameState('win')
+  const bossBlockingProgress = boss?.active && !boss.dead
+
+  if (portal?.active) {
+    const playerTouchesPortal =
+      player.x < portal.x + portal.width &&
+      player.x + PLAYER_SIZE > portal.x &&
+      player.y < portal.y + portal.height &&
+      player.y + PLAYER_SIZE > portal.y
+
+    if (playerTouchesPortal) {
+      completeLevel()
+      return
     }
+  }
+
+  if (coins.every((coin) => coin.collected) && !bossBlockingProgress) {
+    completeLevel()
+    return
   }
 
   enemies.forEach((enemy) => {
@@ -531,29 +556,6 @@ export function stepGameFrame({
       }
     }
 
-    if (player.isAttacking && game.boss.active && !game.boss.dead) {
-      const hitbox = getPlayerAttackHitbox(player, player.attackDirection)
-      if (
-        hitbox.x < game.boss.x + BOSS_SIZE &&
-        hitbox.x + hitbox.width > game.boss.x &&
-        hitbox.y < game.boss.y + BOSS_SIZE &&
-        hitbox.y + hitbox.height > game.boss.y
-      ) {
-        if (game.boss.hitFlash <= 0) {
-          game.boss.hp -= 1
-          game.boss.hitFlash = 150
-          syncBossHud(game.boss)
-          triggerShake(8, 200)
-          if (game.boss.hp <= 0) {
-            game.boss.dead = true
-            syncBossHud(game.boss)
-            setScore((prev) => prev + BOSS_POINTS)
-            setGameState('win')
-          }
-        }
-      }
-    }
-
     if (
       !player.isDashing &&
       !player.isAttacking &&
@@ -576,6 +578,12 @@ export function stepGameFrame({
 
   game.enemies = enemies.filter((enemy) => !enemy.dead)
   updateBossInternal(game, deltaTime)
+
+  if (boss?.justDied) {
+    boss.justDied = false
+    completeLevel()
+    return
+  }
 
   if (game.boss.active && !game.boss.dead) {
     game.boss.projectiles.forEach((proj) => {
@@ -639,28 +647,6 @@ export function stepGameFrame({
           arrow.hitEnemy = true
           arrow.stuck = true
           setScore((prev) => prev + ARROW_POINTS)
-
-          if (game.boss.active && !game.boss.dead) {
-            if (
-              arrow.x < game.boss.x + BOSS_SIZE &&
-              arrow.x + 24 > game.boss.x &&
-              arrow.y < game.boss.y + BOSS_SIZE &&
-              arrow.y + 8 > game.boss.y
-            ) {
-              game.boss.hp -= 1
-              game.boss.hitFlash = 150
-              syncBossHud(game.boss)
-              arrow.hitEnemy = true
-              arrow.stuck = true
-              triggerShake(5, 150)
-              if (game.boss.hp <= 0) {
-                game.boss.dead = true
-                syncBossHud(game.boss)
-                setScore((prev) => prev + BOSS_POINTS)
-                setGameState('win')
-              }
-            }
-          }
 
           for (let i = 0; i < 8; i += 1) {
             const angle = (Math.PI * 2 * i) / 8

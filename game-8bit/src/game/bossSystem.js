@@ -19,10 +19,18 @@ export function updateBossSystem({
   getAttackHitbox,
   syncBossHud,
   addScore,
-  setGameState,
 }) {
   const { boss, player, platforms, arrows } = game
   if (!boss.active || boss.dead) return
+
+  const markBossDefeat = () => {
+    if (boss.dead) return
+    boss.dead = true
+    boss.justDied = true
+    boss.hp = Math.max(0, boss.hp)
+    syncBossHud(boss)
+    addScore(BOSS_POINTS)
+  }
 
   const distToPlayerX = Math.abs(player.x - boss.x)
 
@@ -134,10 +142,7 @@ export function updateBossSystem({
       }
 
       if (boss.hp <= 0) {
-        boss.dead = true
-        syncBossHud(boss)
-        addScore(BOSS_POINTS)
-        setGameState('win')
+        markBossDefeat()
       }
     }
   }
@@ -172,10 +177,7 @@ export function updateBossSystem({
       }
 
       if (boss.hp <= 0) {
-        boss.dead = true
-        syncBossHud(boss)
-        addScore(BOSS_POINTS)
-        setGameState('win')
+        markBossDefeat()
       }
     }
   })
